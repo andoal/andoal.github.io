@@ -1,0 +1,138 @@
+<html>    
+        <!--
+        WEBAPP: RetroWebApp
+        AUTOR: Antonio Domingo
+        FECHA: Octubre 2019
+        -->
+
+        <!-- ENLACES A LAS HOJAS DE ESTILO -->
+        <link rel="stylesheet" type="text/css" href="./style/retrowebcam.css">
+        <!-- ENLACES A LOS LITERALES MULTIMIDIOMA -->
+        <script src="./lang/ESP.js"></script>
+        <script src="./lang/ENG.js"></script>
+        <script src="./lang/CAT.js"></script>
+        <!-- ENLACES A HERRAMIENTAS PROPIAS GENÉRICAS -->
+        <script src="./js/tools.js"></script>
+        <!-- ENLACE AL ARCHIVO DE CONFIGURACIÓN DE LA WEBAPP -->
+        <script src="./js/config.js"></script>
+        <!-- ENLACE AL ARCHIVO CON LA LISTA DE EVENTOS DE LA WEBAPP -->
+        <script src="./js/events.js"></script>
+        <!-- ENLACE A LOS ARCHIVOS CON LAS FUNCIONALIDADES DE LA WEBAPP (deseable que se separen en webcomponents ) -->
+        <!-- En este caso trataremos toda la webapp como un único webcomponent El RetroProyector separado en tres partes principales.
+                - (Visible): Area de proyección (donde se muestra el stream de la webcam o una captura de pantalla)
+                - (Visible): Menú de opciones (permite al usario interactuar con las funcionalidaes del sistema)
+                - (Oculto): Area de trabajo para la preparación/edición de imágenes. Se usa por ejemplo para preparar las descargas.
+         -->
+        <script src="./js/retrowebcam.js"></script>
+        
+        <!-- CÓDIGO DE TERCEROS  -->
+        <!-- Material Design Lite: 
+                https://getmdl.io/started/index.html 
+        -->
+        <link rel="stylesheet" href="./UI/material.min.css">
+        <script src="./UI/material.min.js"></script>
+
+        <!-- TIPOGRAFÍA -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <!-- Required for well function in mobile -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- ICONOGRAFÍA -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- CABECERA DE HTML -->    
+    <head>
+        <!-- CODELAB: Add link rel manifest -->
+        <link rel="manifest" href="./manifest.json">
+        <!-- CODELAB: Add description here -->
+        <meta name="description" content="RetroWebCam, herramienta de proyección de visual thinking en el aula">
+        <!-- CODELAB: Add meta theme-color -->
+        <meta name="theme-color" content="#2F3BA2" />
+        <!-- CODELAB: Add iOS meta tags and icons -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="Weather PWA">
+        <link rel="apple-touch-icon" href="/media/webApp/projector_128.png">
+    </head>
+    <!-- CUERPO DE HTML -->
+    <!-- Evento: Cuando esté cargado el DOM -> inicializar la webApp -->    
+    <body onload="init()">
+        <!-- LAYOUT Material Design Lite -->
+        <div id="webApp" class="mdl-grid">
+                <!-- IMATGE PROJECTADA: Columna ample -->
+                <div id="retroWebCam" class="mdl-cell mdl-cell--10-col">
+                        <!-- VÍDEO: Visualitzar imatges de la webCam -->
+                        <video autoplay="true" id="videoElement" class="mdl-cell mdl-cell--12-col filterApply fx0" data-rotate="0"></video>
+                        <!-- CANVAS: Visualitzar captures de pantalla de la webCam -->
+                        <canvas id="canvas"  class="mdl-cell mdl-cell--12-col filterApply_nop filterApply fx0" data-rotate="0"></canvas>
+                        <!-- DOWNLOAD_CANVAS: Espai de treball per preparar les imatges que s'han de descarregar -->
+                        <canvas id="downloadCanvas" class="mdl-cell mdl-cell--12-col filterApply_nop"></canvas>
+                </div> <!-- IMATGE PROJECTADA -->
+
+                <!-- MENÚ D'ACCIONS: Columna estreta -->
+                <!-- ICONOGRAFIA: http://google.github.io/material-design-icons/-->
+                <!-- SEMÀNTICA DELS ATRIBUTS/CLASSES:
+                        mdl-???:        Material Design
+                        menu-camera:    Marca el element com del grup d'elements "menú", que cal activar/desactivar 
+                        quan la càmera està ON i desactivat quan la càmera està OFF.
+                -->
+                <div id="actions" class="mdl-cell mdl-cell--2-col">
+                        <!-- BOTONS ON/OFF: Activar i desactivar la càmera -->
+                        <div id="power" class="mdl-cell mdl-cell--12-col actionButtons">
+                                <button id="cameraOn" class="actionButton video_onButton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                        <i class="material-icons">videocam</i>
+                                </button>
+                                <button  id="cameraOff" class="actionButton video_offButton mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                                <i class="material-icons">videocam_off</i>
+                                </button>                                
+                        </div>
+                        
+                        <!-- BOTONS PLAY/PAUSE: Capturar la imatge en directe de la webCam i la mostra com a imatge estàtica-->
+                        <div  id="pause" class="mdl-cell mdl-cell--12-col actionButtons">
+                                <button  disabled id="webCamPause" class="menuCamera actionButton pauseButton  mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                        <i class="material-icons">pause</i>
+                                </button>
+                                <button  disabled id="webCamPlay" class="menuCamera actionButton playButton  mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                        <i class="material-icons">play_arrow</i>
+                                </button>
+                        </div>
+                        
+                        <!-- BOTÓ ROTACIÓ: Rota la imatge 180º, en certes circumstàncies cal fer-ho per poder treballar i projectar la imatge de manera adequada -->
+                        <div  id="mirror" class="mdl-cell mdl-cell--12-col actionButtons">
+                                <button  disabled id="mirrorButton" class="menuCamera actionButton swapButton  mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                        <i class="material-icons">swap_vert</i>
+                                </button>    
+                        </div>
+                        
+                        <!-- BOTÓ FILTRE: Aplica filtres per millorar la visualització de les imatges (moltes vegadas llapis o rotuladors sobre full en blanc)-->
+                        <div  id="filter" class="mdl-cell mdl-cell--12-col actionButtons">
+                                <button  disabled id="filterButton" class="menuCamera actionButton downloadButton  mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">                                
+                                        <i class="material-icons">photo_filter</i>
+                                </button>
+                        </div>
+
+                        <!-- BOTÓ CAPTURA: Espai per mostrar captures de pantalla, (Idea): actualment fetes en directe, en el futur carregant imatges enmagatzemades en local/remot -->
+                        <div  id="snapshot" class="mdl-cell mdl-cell--12-col actionButtons">
+                                <button  disabled id="snapshotButton" class="menuCamera actionButton snapshotButton  mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                        <i class="material-icons">photo_camera</i>  
+                                </button>
+                        </div>       
+                </div> <!-- MENÚ D'ACCIONS --> 
+        </div> <!-- LAYOUT -->
+        
+        <button id="butInstall" aria-label="Install" hidden>Install</button>
+        <!-- CODELAB: Add the install script here -->
+        <script src="./js/install.js"></script>
+        <script>
+                // CODELAB: Register service worker.
+                if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                        .then((reg) => {
+                        console.log('Service worker registered.', reg);
+                        });
+                });
+                }
+      </script>    
+    </body>
+</html>

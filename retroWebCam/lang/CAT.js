@@ -1,0 +1,3 @@
+var CAT = {
+    pedirNombreArchivo: "Catlà"
+}

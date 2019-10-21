@@ -1,0 +1,119 @@
+/* FULL D'ESTILS DE LA WEB APP
+*/
+
+/* \/ \/ LAYOUT: Material Design */
+/* L'aplicació és una una pàgina que ocupa tot l'ample i alçada, 
+imitant una aplicació mòvil*/
+#webApp{
+  width: 100%;
+  height: 100vh;
+}
+/* Aspecte del LAYOUT que contindrà botons de l'aplicació*/
+.actionButtons{
+  width: 100%;
+  height: 18vh;
+}
+/* Aspecte individual de cada BOTÓ d'interacció */
+.mdl-button.actionButton{
+  width: 100%;
+  min-height: initial;
+  height: 100%;
+}
+
+/* Estat dels butons i estil associat: VISIBLE/NO VISIBLE, demostració accedint per class */
+.mdl-button.video_onButton{
+  display: inline-block;
+}
+.mdl-button.video_offButton{
+  display: none;
+}
+
+/* \/ \/ ELEMENTS */
+/* Estat dels butons i estil associat: VISIBLE/NO VISIBLE, demostració accedint per id */
+#webCamPlay{
+  display:none;
+}
+#webCamPause{
+  display:inline-block;
+}
+
+ /* Estil del layout del contenidor d'imatges */
+#retroWebCam{
+  /* No m'agrada aquest tractament del margin, a més pot ser la font dels desajustos depenent del
+  tamany de la pantalla. Podem millorar-ho amb MDL? */
+  margin-top: 16px; 
+  margin-bottom: 20px;
+  margin-left: 16px;
+  margin-right: 0px;
+  /* Aspecte i comportament de la imatge de fons */
+  /*http://office.manualsonline.com/manuals/mfg/3m/1600.html?p=6*/
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("../media/webApp/retroWebCam.png");
+}
+/* Aspecte del contenidor d'imatges de la webCam */
+#videoElement{
+  /* No m'agrada aquesta solució tractament del margin, a més pot ser la font dels desajustos depenent del
+  tamany de la pantalla. Podem millorar-ho amb MDL? */
+  padding: 10px;
+  max-height: 94vh;    
+}
+/* Aspecte del contenidor d'imatges estàtiques */
+#canvas{
+  display: none;
+  object-fit: contain;
+  max-height: 94vh;
+  padding: 10px;
+  /*border: 1px solid red;*/
+}
+/* Aspecte del contenidor d'imatges per la descàrrega (NO VISIBLE) */
+#downloadCanvas{
+  display: none;
+  object-fit: contain;
+  /*border: 1px solid red;*/
+}
+/* \/ \/ ANIMACIONS */
+/* Descripció de l'animació de rotació d'imatge (0 -> 180) */
+@-webkit-keyframes swapDown {
+  0% {
+      transform: rotate(0deg);
+    }
+  100% {
+      transform: rotate(180deg);
+    }
+}
+/* Descripció de l'animació de rotació d'imatge (180 -> 0) */
+@-webkit-keyframes swapUp {
+  0% {
+      transform: rotate(180deg);
+    }
+  100% {
+      transform: rotate(0deg);
+    }
+}
+/* \/ \/ FILTRES EFECTES ESPECIALS */
+/* Descripció dels filtres visuals que es poden aplicar sobre les imatges */   
+/* Realç en color: per imatges amb retoladors */
+.fx0{
+  filter: saturate(100%) contrast(100%);
+}
+/* Realç en blanc i negre: per imatges amb llapis/retolador negre */
+.fx1{
+  filter: saturate(200%) contrast(200%);
+}
+/* Per solucions futures, actualment no està en ús */
+.fx2{
+  filter: grayscale(100%) contrast(200%);
+}
+/* Per solucions futures, actualment no està en ús */
+.fx3{
+  filter: saturate(400%);
+}
+/* Per solucions futures, actualment no està en ús */
+.fx4{
+  filter: contrast(400%);
+}
+/* Per solucions futures, actualment no està en ús */
+.fx5{
+  filter: grayscale(100%);
+}
