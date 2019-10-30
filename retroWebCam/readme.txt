@@ -69,6 +69,7 @@ ESTRUCTURA DE CARPETAS:
             +-- events.js               // Eventos de la webApp
             +-- tools.js                // Archivo de herramientas aprovechables en otras WebApp's
             +-- retrowebcam.js          // Funcionalidades de la webApp
+            +-- install.js              // Progressive app
         [ ] lang                    // Carpeta con recursos multiidioma
             +-- CAT.js                  // Literales en catalán 
             +-- ENG.js                  // Literales en inglés
@@ -83,6 +84,8 @@ ESTRUCTURA DE CARPETAS:
                                     //carpetas o no queremos dar de alta en la estructura principal.
         [ ] UI                      // Carpeta con recursos relacionados con la Interfaz de Usurio (Bootstrap, material desing...)
             @-- material desing lite    // Recurso de 3os: Material Design Lite: https://getmdl.io/ 
+        +-- manifest.json           // Progressive app
+        +-- service-worker.js       // Progressive app
         
 ESTRUCTURA DE COMPONENTES:
 
