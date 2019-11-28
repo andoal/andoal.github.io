@@ -1,0 +1,36 @@
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+         <link rel="stylesheet" type="text/css" href="splash.css">
+    </head>
+<body id="mainScreen" onload="init()" onclick="openFullScreen()">
+    <video autoplay muted loop id="myVideo">
+                <source src="./media/Tv - 1285.mp4" type="video/mp4">
+    </video>
+              
+              <!-- Optional: some overlay text to describe the video -->
+              
+
+    <div id="mainDiv">
+        <div id="boxDiv">
+            <div id="front">
+                    <video autoplay loop muted class="banner__video" poster="./media/CEP-Desc.png">
+                            <source src="./media/World2.mp4" type="video/mp4">
+                    </video>
+            </div>
+            <div id="back"></div>
+            <div id="left"></div>
+            <div id="right"></div>
+            <div id="top"></div>
+            <div id="bottom"></div>
+            
+            <div class="shadow"></div>
+        </div>
+    </div>  
+
+<script src="./js/myScript.js"></script>
+
+</body>
+</html>

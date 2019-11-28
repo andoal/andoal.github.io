@@ -1,0 +1,150 @@
+body{
+    background-color: coral;
+}
+#mainDiv {
+    width: 400px;
+    height: 400px;
+    margin: 200px auto;
+    perspective: 800px;
+    background-color: coral;
+}
+
+#boxDiv {
+    width: 400px;   
+    transform-style: preserve-3d; 
+    animation: rotate 15s linear infinite;
+}
+
+#boxDiv div {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    opacity: 1.00;
+    color: white;
+}
+
+#front {
+    transform: translateZ(200px);
+    background: white;
+    background-image: url("./media/CEP-Desc.png");
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-size: contain;
+}
+
+
+#back {
+    transform: rotateY(180deg) translateZ(200px);
+    background: white;
+    background-image: url("./media/astronauta.jpg");
+    background-position: center;
+    background-repeat: no-repeat; 
+    background-size: crop;   
+}
+
+#left {
+    transform: rotateY(-90deg) translateX(-200px);
+    transform-origin: left;
+    background: white;
+    background-image: url("./media/CEP-Desc.png");
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-size: contain;
+}
+
+#right {
+    transform: rotateY(90deg) translateX(200px);
+    transform-origin: right;
+    background: white;  
+    background-image: url("./media/mctc.jpg");
+    background-position: center;
+    background-repeat: no-repeat; 
+    background-size: contain;   
+}
+
+#top {
+    transform: rotateX(-90deg) translateY(-200px);
+    transform-origin: top;
+    background: white;
+    background-image: url("./media/CEP-Desc.png");
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-size: contain;
+}
+
+#bottom {
+    transform: rotateX(90deg) translateY(200px);
+    transform-origin: bottom;
+    background: white; 
+    background-image: url("./media/CEP-Desc.png");
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-size: contain;
+}
+
+@keyframes rotate {
+    0% { transform: rotateY(0); }
+    100% { transform: rotateY(360deg); }
+}
+
+
+.shadow {
+    
+    
+    width:400px;
+    height:400px;
+    background: rgba(0,0,0,0.5);
+    box-shadow: 0 0 50px 50px rgba(0,0,0,0.5);
+    -webkit-transform: rotateX(90deg) translateZ(-250px) rotateY(180deg) translateX(0px);
+
+}
+
+banner {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .banner__video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width:100%;
+    /*min-width: 100%;*/
+    /*height: auto;*/
+     object-fit: cover;
+    /*min-height: 100%;*/
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -1;
+  }
+
+  #myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+    color: coral;
+    background-color: coral;
+  }
+  
+  /* Add some content at the bottom of the video/page */
+  .mainDiv {
+    position: fixed;
+    bottom: 0;
+    background-color: #f1f1f1;
+    height: 100%;
+    padding: 0px;
+  }
+  body {
+    background-color: coral;
+  }
+  :fullscreen::backdrop {
+    background-color: coral; 
+}
+:-ms-fullscreen::-ms-backdrop
+{
+    background-color: coral; 
+}
