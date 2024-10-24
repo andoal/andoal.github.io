@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Metadatos y estilos  v1.2-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teleprompter - @Indocents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            background-color: black;
+            font-size: 1em;
+        }
+        .teleprompter-container {
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+        }
+        .teleprompter-text {
+            width: 80%;
+            font-size: 2em;
+            line-height: 1.5em;
+            text-align: justify;
+            position: relative;
+            transform: translateY(0);
+            padding-top: 3em;
+            background-image: url('./papel_pautado.png'); /* Agrega la imagen como fondo */
+            background-repeat: repeat; /* Repite verticalmente */
+            background-size: auto; /* Ajusta el tamaño para cubrir toda la pantalla */
+        }
+        .marker {
+            width: 100%;
+            height: 2px;
+            background-color: black;
+            position: absolute;
+        }
+        .marker-start {
+            top: 0;
+        }
+        .marker-end {
+            bottom: 0;
+        }
+        #fileInputContainer {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            transition: opacity 0.5s ease;
+        }
+        #scrollSpeedDisplay{
+            padding-left: 5px;
+        }
+        #fileInput {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #scrollSpeedDisplay {
+            color: white;
+            font-size: 1em;
+            margin-top: 5px;
+            text-align: left;
+        }
+        #relleno{
+            margin-top: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenido del cuerpo -->
+    <div id="fileInputContainer">
+        <input type="file" id="fileInput" accept=".txt, .md" onclick="event.stopPropagation();">
+        <div id="scrollSpeedDisplay">Velocidad actual: 2.5</div>
+    </div>
+    <div class="teleprompter-container">
+        <div class="teleprompter-text" id="teleprompterText">
+            <div class="marker marker-start" id="startMarker"></div>
+            <p><em><strong>Bienvenido al Teleprompter de @Indocents. Para empezar a desplazarte, usa la tecla de espacio. Puedes ajustar la velocidad con las teclas de flecha derecha e izquierda, y cambiar la dirección del desplazamiento haciendo doble clic en la tecla de espacio.</strong></em></p>
+            <p><em><strong>Si quieres cargar un archivo de texto personalizado (con formato markdown *.md), utiliza el botón de "Cargar Archivo" que se encuentra en la parte superior izquierda de la pantalla.</strong></em></p>
+            <p>Hablar frente a un teleprompter es como intentar caminar por la cuerda floja mientras masticas chicle, sostienes un paraguas y saludas al público... todo al mismo tiempo. A primera vista parece sencillo, solo leer el texto y ya está, pero, ¡oh sorpresa!, de repente te das cuenta de que tus ojos quieren leer más rápido que tu boca, tu cerebro está tratando de recordar qué significaba esa palabra difícil, y tus manos empiezan a sudar como si estuvieras a punto de lanzar un discurso presidencial.</p>
+            <p>Y luego está la velocidad. Demasiado rápido y parecerás un locutor de subastas vendiendo una vaca, demasiado lento y podrías poner a la audiencia a dormir... ¡sin importar cuán emocionante sea el texto! Y ahí es cuando empiezas a preguntarte si deberías haber practicado más, o quizás haber elegido una carrera diferente, como jardinero, donde el único texto que necesitas leer es el manual de instrucciones de la podadora.</p>
+            <p>Y el contacto visual... Ah, el contacto visual. Supuestamente, el truco es parecer que miras al público mientras lees el teleprompter. Pero en realidad, tus ojos están haciendo una especie de danza del escondite. Un ojo lee el texto, el otro intenta mirar a la audiencia. Y el resultado es una mirada que podría confundirse fácilmente con la de alguien que está intentando descifrar el menú en un restaurante lleno de palabras raras.</p>
+            <p>Además, está el estrés del texto en sí. Si el texto es tuyo, todavía hay esperanza. Pero si es de otra persona, estás en problemas. No solo tienes que leerlo, sino también entenderlo, sentirlo, y hacerlo parecer como si fueras tú quien lo ha escrito, y no un robot que lo está leyendo por primera vez. Y claro, ahí viene la palabra impronunciable, esa que parece haber sido puesta ahí solo para que falles... y tú intentas mantener la compostura, pero en el fondo solo piensas "¿quién demonios escribe estas cosas?".</p>
+            <p>Y como si eso fuera poco, tienes las luces, las cámaras, y, si tienes suerte, alguien que te habla por un auricular diciéndote "¡más emoción, más emoción!". Claro, más emoción, justo cuando lo único que quieres es que el teleprompter se detenga para poder respirar. Pero al final, cuando todo sale bien, cuando logras ese perfecto equilibrio entre leer, mirar, y respirar, te das cuenta de que quizás, solo quizás, esto no es tan difícil después de todo... hasta que llega el siguiente texto.</p>
+            <div class="marker marker-end" id="endMarker"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const scrollSpeedSettings = {
+            speed: 2.5, // Velocidad inicial de scroll
+            minSpeed: -20,
+            maxSpeed: 20,
+            speedStep: 0.5
+        };
+        
+        let scrolling = false;
+        let currentPosition = 0;
+        let scrollDirection = 1;
+        let lastClickTime = 0;
+        let lastTouchTime = 0;
+        let touchStartY = 0;
+        let touchMoved = false;
+        const textElement = document.getElementById('teleprompterText');
+        let startMarker = document.getElementById('startMarker');
+        let endMarker = document.getElementById('endMarker');
+        const containerHeight = document.querySelector('.teleprompter-container').clientHeight;
+        const fileInput = document.getElementById('fileInput');
+        const fileInputContainer = document.getElementById('fileInputContainer');
+        const scrollSpeedDisplay = document.getElementById('scrollSpeedDisplay');
+
+        fileInput.addEventListener('change', loadFile);
+        document.addEventListener('keydown', handleKeyEvents);
+        document.addEventListener('mousedown', handleMouseEvents);
+        document.addEventListener('wheel', handleWheelEvents, { passive: false });
+        document.addEventListener('touchstart', handleTouchStart, { passive: false });
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+
+        function loadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileContent = e.target.result;
+                    textElement.innerHTML = 
+                        `<div class="marker marker-start" id="startMarker"></div>` +
+                        (file.name.endsWith('.md') ? marked.parse(fileContent) : fileContent.replace(/\n/g, '<br>')) +
+                        `<div class="marker marker-end" id="endMarker"></div>`;
+                    
+                    // Actualizar referencias a los marcadores
+                    startMarker = document.getElementById('startMarker');
+                    endMarker = document.getElementById('endMarker');
+                    fileInput.blur(); // Quitar el foco del botón de carga de archivo
+                    resetScrollSettings(); // Resetear las configuraciones para asegurar el control del teleprompter
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function resetScrollSettings() {
+            scrolling = false;
+            currentPosition = 0;
+            scrollDirection = 1;
+            textElement.style.transform = `translateY(${currentPosition}px)`;
+        }
+
+        function scrollTeleprompter() {
+            if (scrolling) {
+                currentPosition -= scrollSpeedSettings.speed * 0.1 * scrollDirection;
+                textElement.style.transform = `translateY(${currentPosition}px)`;
+
+                const maxPosition = 0;
+                const minPosition = -1 * (textElement.scrollHeight - containerHeight);
+                currentPosition = Math.min(maxPosition, Math.max(currentPosition, minPosition));
+
+                if ((reachedBoundary(startMarker, 'top') && scrollDirection === -1) ||
+                    (reachedBoundary(endMarker, 'bottom') && scrollDirection === 1)) {
+                    scrolling = false;
+                }
+
+                requestAnimationFrame(scrollTeleprompter);
+            }
+        }
+
+        function reachedBoundary(marker, position) {
+            const markerRect = marker.getBoundingClientRect();
+            const containerRect = document.querySelector('.teleprompter-container').getBoundingClientRect();
+            return position === 'top' ? markerRect.bottom >= containerRect.top : markerRect.top <= containerRect.bottom;
+        }
+
+        function toggleScroll() {
+            if (!scrolling) {
+                scrolling = true;
+                fileInputContainer.style.opacity = '0';
+                scrollTeleprompter();
+            } else {
+                scrolling = false;
+                fileInputContainer.style.opacity = '1';
+            }
+        }
+
+        function changeScrollSpeed(increase) {
+            if (increase) {
+                scrollSpeedSettings.speed = Math.min(scrollSpeedSettings.speed + scrollSpeedSettings.speedStep, scrollSpeedSettings.maxSpeed);
+            } else {
+                scrollSpeedSettings.speed = Math.max(scrollSpeedSettings.speed - scrollSpeedSettings.speedStep, scrollSpeedSettings.minSpeed);
+            }
+            scrollSpeedDisplay.textContent = `Velocidad actual: ${scrollSpeedSettings.speed.toFixed(1)}`;
+             // Mostrar el botón de cargar archivo si la velocidad es menor o igual a 1.0
+            if (scrollSpeedSettings.speed <= 1.0) {
+                fileInputContainer.style.opacity = '1';
+            } else {
+                fileInputContainer.style.opacity = '0';
+            }
+        }
+
+        function toggleScrollDirection() {
+            scrollDirection *= -1;
+        }
+
+        function handleKeyEvents(event) {
+    switch (event.key) {
+        case 'PageDown':
+            changeScrollSpeed(true);
+            if (!scrolling) {
+                toggleScroll(); // Inicia el scroll si está parado
+            }
+            break;
+        case 'PageUp':
+            changeScrollSpeed(false);
+            if (!scrolling) {
+                toggleScroll(); // Inicia el scroll si está parado
+            }
+            break;
+        case 'ArrowRight':
+            changeScrollSpeed(true);
+            break;
+        case 'ArrowLeft':
+            changeScrollSpeed(false);
+            break;
+        case ' ':
+            const currentTime = new Date().getTime();
+            if (currentTime - lastClickTime < 300) {
+                toggleScrollDirection();
+                if (!scrolling) {
+                    toggleScroll();
+                }
+            } else {
+                toggleScroll();
+            }
+            lastClickTime = currentTime;
+            break;
+    }
+}
+
+        function handleWheelEvents(event) {
+            event.preventDefault();
+            if (event.deltaY < 0) {
+                // Desplazamiento hacia arriba, disminuir velocidad
+                changeScrollSpeed(false);
+            } else {
+                // Desplazamiento hacia abajo, aumentar velocidad
+                changeScrollSpeed(true);
+            }
+        }
+
+        function handleTouchStart(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            touchStartY = event.touches[0].clientY;
+            lastTouchTime = new Date().getTime();
+            touchMoved = false;
+        }
+
+        function handleTouchMove(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            touchMoved = true;
+            const touchCurrentY = event.touches[0].clientY;
+            const deltaY = touchStartY - touchCurrentY;
+
+            if (Math.abs(deltaY) > 10) {
+                if (deltaY > 0) {
+                    changeScrollSpeed(true);
+                } else {
+                    changeScrollSpeed(false);
+                }
+                touchStartY = touchCurrentY;
+            }
+        }
+
+        function handleTouchEnd(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            if (!touchMoved) {
+                handleTap();
+            }
+        }
+
+        function handleMouseEvents(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            const currentTime = new Date().getTime();
+            if (currentTime - lastClickTime < 300) {
+                toggleScrollDirection();
+                if (!scrolling) {
+                    toggleScroll();
+                }
+            } else {
+                toggleScroll();
+            }
+            lastClickTime = currentTime;
+        }
+
+        function handleTap() {
+            const currentTime = new Date().getTime();
+            if (currentTime - lastClickTime < 300) {
+                toggleScrollDirection();
+                if (!scrolling) {
+                    toggleScroll();
+                }
+            } else {
+                toggleScroll();
+            }
+            lastClickTime = currentTime;
+        }
+    </script>
+</body>
+</html>
