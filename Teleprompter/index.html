@@ -10,7 +10,7 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
             background-color: black;
-            font-size: 0.75em;
+            font-size: 1em;
         }
         .teleprompter-container {
             width: 100%;
@@ -30,7 +30,7 @@
             text-align: justify;
             position: relative;
             transform: translateY(0);
-            padding-top: 1.5em;
+            padding-top: 3em;
             background-image: url('./papel_pautado.png'); /* Agrega la imagen como fondo */
             background-repeat: repeat-y; /* Repite verticalmente */
             background-size: cover; /* Ajusta el tamaño para cubrir toda la pantalla */
@@ -124,15 +124,6 @@
         const fileInput = document.getElementById('fileInput');
         const fileInputContainer = document.getElementById('fileInputContainer');
         const scrollSpeedDisplay = document.getElementById('scrollSpeedDisplay');
-
-//fileInput.addEventListener('change', loadFile);
-
-//document.addEventListener('keydown', handleKeyEvents);
-//document.addEventListener('mousedown', handleMouseEvents);
-//document.addEventListener('wheel', handleWheelEvents, { passive: false });
-//document.addEventListener('touchstart', handleTouchStart, { passive: false });
-//document.addEventListener('touchmove', handleTouchMove, { passive: false });
-//document.addEventListener('touchend', handleTouchEnd);
 
         fileInput.addEventListener('change', loadFile);
         document.addEventListener('keydown', handleKeyEvents);
@@ -240,21 +231,7 @@
                     break;
             }
         }
-/*
-        function handleMouseEvents(event) {
-            event.preventDefault();
-            const currentTime = new Date().getTime();
-            if (currentTime - lastClickTime < 300) {
-                toggleScrollDirection();
-                if (!scrolling) {
-                    toggleScroll();
-                }
-            } else {
-                toggleScroll();
-            }
-            lastClickTime = currentTime;
-        }
-*/
+
         function handleWheelEvents(event) {
             event.preventDefault();
             if (event.deltaY < 0) {
@@ -267,60 +244,59 @@
         }
 
         function handleTouchStart(event) {
-    if (event.target.closest('#fileInputContainer')) {
-        return;
-    }
-    event.preventDefault();
-    touchStartY = event.touches[0].clientY;
-    lastTouchTime = new Date().getTime();
-    touchMoved = false;
-}
-
-function handleTouchMove(event) {
-    if (event.target.closest('#fileInputContainer')) {
-        return;
-    }
-    event.preventDefault();
-    touchMoved = true;
-    const touchCurrentY = event.touches[0].clientY;
-    const deltaY = touchStartY - touchCurrentY;
-
-    if (Math.abs(deltaY) > 10) {
-        if (deltaY > 0) {
-            changeScrollSpeed(true);
-        } else {
-            changeScrollSpeed(false);
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            touchStartY = event.touches[0].clientY;
+            lastTouchTime = new Date().getTime();
+            touchMoved = false;
         }
-        touchStartY = touchCurrentY;
-    }
-}
 
-function handleTouchEnd(event) {
-    if (event.target.closest('#fileInputContainer')) {
-        return;
-    }
-    if (!touchMoved) {
-        handleTap();
-    }
-}
+        function handleTouchMove(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            touchMoved = true;
+            const touchCurrentY = event.touches[0].clientY;
+            const deltaY = touchStartY - touchCurrentY;
 
-function handleMouseEvents(event) {
-    if (event.target.closest('#fileInputContainer')) {
-        return;
-    }
-    event.preventDefault();
-    const currentTime = new Date().getTime();
-    if (currentTime - lastClickTime < 300) {
-        toggleScrollDirection();
-        if (!scrolling) {
-            toggleScroll();
+            if (Math.abs(deltaY) > 10) {
+                if (deltaY > 0) {
+                    changeScrollSpeed(true);
+                } else {
+                    changeScrollSpeed(false);
+                }
+                touchStartY = touchCurrentY;
+            }
         }
-    } else {
-        toggleScroll();
-    }
-    lastClickTime = currentTime;
-}
 
+        function handleTouchEnd(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            if (!touchMoved) {
+                handleTap();
+            }
+        }
+
+        function handleMouseEvents(event) {
+            if (event.target.closest('#fileInputContainer')) {
+                return;
+            }
+            event.preventDefault();
+            const currentTime = new Date().getTime();
+            if (currentTime - lastClickTime < 300) {
+                toggleScrollDirection();
+                if (!scrolling) {
+                    toggleScroll();
+                }
+            } else {
+                toggleScroll();
+            }
+            lastClickTime = currentTime;
+        }
 
         function handleTap() {
             const currentTime = new Date().getTime();
