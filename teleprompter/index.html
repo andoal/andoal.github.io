@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Metadatos y estilos  v1.2-->
+    <!-- Metadatos y estilos v1.2-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teleprompter - @Indocents</title>
@@ -58,7 +58,7 @@
             border-radius: 10px;
             transition: opacity 0.5s ease;
         }
-        #scrollSpeedDisplay{
+        #scrollSpeedDisplay {
             padding-left: 5px;
         }
         #fileInput {
@@ -74,7 +74,21 @@
             margin-top: 5px;
             text-align: left;
         }
-        #relleno{
+        #timerDisplay {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            text-align: right;
+            transition: opacity 0.5s ease;
+        }
+        #relleno {
             margin-top: 200px;
             height: 200px;
         }
@@ -86,6 +100,7 @@
         <input type="file" id="fileInput" accept=".txt, .md" onclick="event.stopPropagation();">
         <div id="scrollSpeedDisplay">Velocidad actual: 2.5</div>
     </div>
+    <div id="timerDisplay">Tiempo: 00:00:00</div>
     <div class="teleprompter-container">
         <div class="teleprompter-text" id="teleprompterText">
             <div class="marker marker-start" id="startMarker"></div>
@@ -124,6 +139,10 @@
         const fileInput = document.getElementById('fileInput');
         const fileInputContainer = document.getElementById('fileInputContainer');
         const scrollSpeedDisplay = document.getElementById('scrollSpeedDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        let timerInterval;
+        let elapsedTime = 0;
 
         fileInput.addEventListener('change', loadFile);
         document.addEventListener('keydown', handleKeyEvents);
@@ -149,6 +168,7 @@
                     endMarker = document.getElementById('endMarker');
                     fileInput.blur(); // Quitar el foco del botón de carga de archivo
                     resetScrollSettings(); // Resetear las configuraciones para asegurar el control del teleprompter
+                    resetTimer(); // Reiniciar el temporizador
                 };
                 reader.readAsText(file);
             }
@@ -159,6 +179,14 @@
             currentPosition = 0;
             scrollDirection = 1;
             textElement.style.transform = `translateY(${currentPosition}px)`;
+            fileInputContainer.style.opacity = '1';
+            timerDisplay.style.opacity = '1';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            timerDisplay.textContent = `Tiempo: 00:00:00`;
         }
 
         function scrollTeleprompter() {
@@ -173,6 +201,9 @@
                 if ((reachedBoundary(startMarker, 'top') && scrollDirection === -1) ||
                     (reachedBoundary(endMarker, 'bottom') && scrollDirection === 1)) {
                     scrolling = false;
+                    stopTimer();
+                    fileInputContainer.style.opacity = '1';
+                    timerDisplay.style.opacity = '1';
                 }
 
                 requestAnimationFrame(scrollTeleprompter);
@@ -189,10 +220,14 @@
             if (!scrolling) {
                 scrolling = true;
                 fileInputContainer.style.opacity = '0';
+                timerDisplay.style.opacity = '0.8';
+                startTimer();
                 scrollTeleprompter();
             } else {
                 scrolling = false;
                 fileInputContainer.style.opacity = '1';
+                timerDisplay.style.opacity = '1';
+                stopTimer();
             }
         }
 
@@ -203,7 +238,7 @@
                 scrollSpeedSettings.speed = Math.max(scrollSpeedSettings.speed - scrollSpeedSettings.speedStep, scrollSpeedSettings.minSpeed);
             }
             scrollSpeedDisplay.textContent = `Velocidad actual: ${scrollSpeedSettings.speed.toFixed(1)}`;
-             // Mostrar el botón de cargar archivo si la velocidad es menor o igual a 1.0
+            // Mostrar el botón de cargar archivo si la velocidad es menor o igual a 1.0
             if (scrollSpeedSettings.speed <= 1.0) {
                 fileInputContainer.style.opacity = '1';
             } else {
@@ -216,39 +251,39 @@
         }
 
         function handleKeyEvents(event) {
-    switch (event.key) {
-        case 'PageDown':
-            changeScrollSpeed(true);
-            if (!scrolling) {
-                toggleScroll(); // Inicia el scroll si está parado
+            switch (event.key) {
+                case 'PageDown':
+                    changeScrollSpeed(true);
+                    if (!scrolling) {
+                        toggleScroll(); // Inicia el scroll si está parado
+                    }
+                    break;
+                case 'PageUp':
+                    changeScrollSpeed(false);
+                    if (!scrolling) {
+                        toggleScroll(); // Inicia el scroll si está parado
+                    }
+                    break;
+                case 'ArrowRight':
+                    changeScrollSpeed(true);
+                    break;
+                case 'ArrowLeft':
+                    changeScrollSpeed(false);
+                    break;
+                case ' ':
+                    const currentTime = new Date().getTime();
+                    if (currentTime - lastClickTime < 300) {
+                        toggleScrollDirection();
+                        if (!scrolling) {
+                            toggleScroll();
+                        }
+                    } else {
+                        toggleScroll();
+                    }
+                    lastClickTime = currentTime;
+                    break;
             }
-            break;
-        case 'PageUp':
-            changeScrollSpeed(false);
-            if (!scrolling) {
-                toggleScroll(); // Inicia el scroll si está parado
-            }
-            break;
-        case 'ArrowRight':
-            changeScrollSpeed(true);
-            break;
-        case 'ArrowLeft':
-            changeScrollSpeed(false);
-            break;
-        case ' ':
-            const currentTime = new Date().getTime();
-            if (currentTime - lastClickTime < 300) {
-                toggleScrollDirection();
-                if (!scrolling) {
-                    toggleScroll();
-                }
-            } else {
-                toggleScroll();
-            }
-            lastClickTime = currentTime;
-            break;
-    }
-}
+        }
 
         function handleWheelEvents(event) {
             event.preventDefault();
@@ -327,6 +362,25 @@
                 toggleScroll();
             }
             lastClickTime = currentTime;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                elapsedTime += 1;
+                timerDisplay.textContent = `Tiempo: ${formatTime(elapsedTime)}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function formatTime(totalSeconds) {
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
         }
     </script>
 </body>
