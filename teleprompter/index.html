@@ -100,7 +100,7 @@
         <input type="file" id="fileInput" accept=".txt, .md" onclick="event.stopPropagation();">
         <div id="scrollSpeedDisplay">Velocidad actual: 2.5</div>
     </div>
-    <div id="timerDisplay">Tiempo: 00:00:00</div>
+    <div id="timerDisplay">00:00:00</div>
     <div class="teleprompter-container">
         <div class="teleprompter-text" id="teleprompterText">
             <div class="marker marker-start" id="startMarker"></div>
@@ -186,7 +186,7 @@
         function resetTimer() {
             clearInterval(timerInterval);
             elapsedTime = 0;
-            timerDisplay.textContent = `Tiempo: 00:00:00`;
+            timerDisplay.textContent = `00:00:00`;
         }
 
         function scrollTeleprompter() {
@@ -368,7 +368,7 @@
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 elapsedTime += 1;
-                timerDisplay.textContent = `Tiempo: ${formatTime(elapsedTime)}`;
+                timerDisplay.textContent = `${formatTime(elapsedTime)}`;
             }, 1000);
         }
 
