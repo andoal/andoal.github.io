@@ -87,6 +87,8 @@
             font-size: 1em;
             text-align: right;
             transition: opacity 0.5s ease;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
         }
         #relleno {
             margin-top: 200px;
@@ -104,15 +106,21 @@
     <div class="teleprompter-container">
         <div class="teleprompter-text" id="teleprompterText">
             <div class="marker marker-start" id="startMarker"></div>
-            <p><em><strong>Hola, este es el Teleprompter de @Indocents. Para empezar a desplazarte, usa la tecla de espacio. Puedes ajustar la velocidad con las teclas de flecha derecha e izquierda, y cambiar la dirección del desplazamiento haciendo doble clic en la tecla de espacio.</strong></em></p>
-            <p><em><strong>Si quieres cargar un archivo de texto personalizado (con formato markdown *.md), utiliza el botón de "Cargar Archivo" que se encuentra en la parte superior izquierda de la pantalla.</strong></em></p>
-            <p>Hablar frente a un teleprompter es como intentar caminar por la cuerda floja mientras masticas chicle, sostienes un paraguas y saludas al público... todo al mismo tiempo. A primera vista parece sencillo, solo leer el texto y ya está, pero, ¡oh sorpresa!, de repente te das cuenta de que tus ojos quieren leer más rápido que tu boca, tu cerebro está tratando de recordar qué significaba esa palabra difícil, y tus manos empiezan a sudar como si estuvieras a punto de lanzar un discurso presidencial.</p>
-            <p>Y luego está la velocidad. Demasiado rápido y parecerás un locutor de subastas vendiendo una vaca, demasiado lento y podrías poner a la audiencia a dormir... ¡sin importar cuán emocionante sea el texto! Y ahí es cuando empiezas a preguntarte si deberías haber practicado más, o quizás haber elegido una carrera diferente, como jardinero, donde el único texto que necesitas leer es el manual de instrucciones de la podadora.</p>
-            <p>Y el contacto visual... Ah, el contacto visual. Supuestamente, el truco es parecer que miras al público mientras lees el teleprompter. Pero en realidad, tus ojos están haciendo una especie de danza del escondite. Un ojo lee el texto, el otro intenta mirar a la audiencia. Y el resultado es una mirada que podría confundirse fácilmente con la de alguien que está intentando descifrar el menú en un restaurante lleno de palabras raras.</p>
-            <p>Además, está el estrés del texto en sí. Si el texto es tuyo, todavía hay esperanza. Pero si es de otra persona, estás en problemas. No solo tienes que leerlo, sino también entenderlo, sentirlo, y hacerlo parecer como si fueras tú quien lo ha escrito, y no un robot que lo está leyendo por primera vez. Y claro, ahí viene la palabra impronunciable, esa que parece haber sido puesta ahí solo para que falles... y tú intentas mantener la compostura, pero en el fondo solo piensas "¿quién demonios escribe estas cosas?".</p>
+            <p><em><strong>Instrucciones de uso:</strong></em></p>
+            <p>Hola, este es el Teleprompter de @Indocents. Para comenzar, sigue estas instrucciones:</p>
+            <ul>
+                <li>Usa la tecla de espacio para empezar a desplazarte.</li>
+                <li>Puedes ajustar la velocidad con las teclas de flecha derecha e izquierda.</li>
+                <li>Puedes cambiar la dirección del desplazamiento haciendo doble clic en la tecla de espacio.</li>
+            </ul>
+            <p>Si quieres cargar un archivo de texto personalizado (con formato markdown *.md), utiliza el botón de "Cargar Archivo" que se encuentra en la parte superior izquierda de la pantalla.</p>
+            <p><em><strong>Para practicar:</strong></em></p>
+            <p>Hablar frente a un teleprompter es como caminar por la cuerda floja mientras intentas saludar al público... todo al mismo tiempo. A primera vista parece sencillo, solo leer el texto y ya está, pero, ¡oh sorpresa!, de repente te das cuenta de que tus ojos quieren leer más rápido que tu boca, tu cerebro está tratando de recordar qué significaba esa palabra difícil, y tus manos empiezan a sudar como si estuvieras a punto de lanzar un discurso presidencial.</p>
+            <p>Y luego está la velocidad. Demasiado rápido y parecerá que estás haciendo una subasta, demasiado lento y podrías poner a la audiencia a dormir... ¡sin importar cuán emocionante sea el texto! Y ahí es cuando empiezas a preguntarte si deberías haber practicado más, o quizás haber elegido una profesión diferente, mucho mejor dedicarse a jardinería y leer el manual de instrucciones de la podadora.</p>
+            <p>Y el contacto visual... Ah, el contacto visual. Supuestamente, el truco es parecer que miras al público mientras lees el teleprompter. En realidad, tus ojos están haciendo una especie de danza del escondite, donde un ojo lee el texto y el otro intenta mirar a la audiencia. Y el resultado es una mirada que podría confundirse fácilmente con la de alguien que está intentando descifrar el menú de un restaurante gourmet... escrito en japonés.</p>
+            <p>Además, está el estrés del texto en sí. Si el texto es tuyo, todavía hay esperanza. Pero si es de otra persona, estás en problemas. No solo tienes que leerlo, sino también entenderlo, sentirlo, y hacerlo parecer como si fueras tú quien lo ha escrito, y no un robot que lo está leyendo por primera vez. Y claro, ahí viene la palabra impronunciable, como 'otorinolaringólogo', esa que parece haber sido puesta ahí solo para que falles... y tú intentas mantener la compostura, pero en el fondo solo piensas "¿quién demonios escribe estas cosas?".</p>
             <p>Y como si eso fuera poco, tienes las luces, las cámaras, y, si tienes suerte, alguien que te habla por un auricular diciéndote "¡más emoción, más emoción!". Claro, más emoción, justo cuando lo único que quieres es que el teleprompter se detenga para poder respirar. Pero al final, cuando todo sale bien, cuando logras ese perfecto equilibrio entre leer, mirar, y respirar, te das cuenta de que quizás, solo quizás, esto no es tan difícil después de todo... hasta que llega el siguiente texto.</p>
             <div class="marker marker-end" id="endMarker"></div>
-        </div>
     </div>
 
     <!-- Scripts -->
